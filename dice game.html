@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Foreplay Dice Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* CSS Styles */
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* Splash Screen Styles */
+        #splash-screen {
+            position: relative;
+            height: 100vh;
+            background: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #start-button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #00ff00; /* Bright green */
+            color: #000;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Game Screen Styles */
+        #game-screen {
+            display: none;
+            overflow: hidden;
+        }
+
+        #background {
+            position: relative;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        #dice-container {
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Dice Styles */
+        .dice {
+            width: 120px;
+            height: 120px;
+            background-color: #000; /* Black dice */
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset -4px -4px 10px rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .dice-text {
+            font-size: 14px;
+            color: #00ff00; /* Green text */
+            text-align: center;
+        }
+
+        /* Roll Button */
+        #roll-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background-color: #00ff00; /* Bright green */
+            color: #000;
+            border: none;
+            border-radius: 5px;
+        }
+
+        /* Story Text */
+        #story-text {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            font-size: 1.2em;
+            font-family: 'Brush Script MT', cursive; /* More elegant font */
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 40%;
+            overflow-y: auto;
+        }
+
+        /* Dice Roll Animation */
+        @keyframes roll {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(90deg); }
+            50% { transform: rotate(180deg); }
+            75% { transform: rotate(270deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .roll-animation {
+            animation: roll 0.5s ease-in-out;
+        }
+
+        /* Mobile Responsiveness */
+        @media only screen and (max-width: 600px) {
+            .dice {
+                width: 100px;
+                height: 100px;
+            }
+
+            #story-text {
+                font-size: 1em;
+                max-height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <h1>Welcome to the Foreplay Dice Game</h1>
+        <button id="start-button">Start Game</button>
+    </div>
+
+    <!-- Main Game Screen -->
+    <div id="game-screen">
+        <div id="background">
+            <div id="dice-container">
+                <!-- Action Dice -->
+                <div id="dice-action" class="dice">
+                    <div class="dice-text"></div>
+                </div>
+                <!-- Position Dice -->
+                <div id="dice-position" class="dice">
+                    <div class="dice-text"></div>
+                </div>
+            </div>
+            <button id="roll-button">Roll Dice</button>
+            <p id="story-text"></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Code
+
+        // Arrays for actions and positions using exact words provided
+        const actions = [
+            "oral play",
+            "peck path",
+            "wand play",
+            "bite bonus",
+            "backdoor bonus",
+            "nipple play"
+        ];
+
+        const positions = [
+            "doggy style",
+            "standing",
+            "sitting spoon position",
+            "cowgirl legs over shoulder",
+            "riding upright",
+            "downward doggy style"
+        ];
+
+        const backgrounds = [
+            {
+                setting: "a cozy bedroom",
+                image: "https://images.pexels.com/photos/5644286/pexels-photo-5644286.jpeg"
+            },
+            {
+                setting: "a steamy shower",
+                image: "https://images.pexels.com/photos/11809107/pexels-photo-11809107.jpeg"
+            },
+            {
+                setting: "a candlelit room",
+                image: "https://images.pexels.com/photos/10606471/pexels-photo-10606471.jpeg"
+            },
+            {
+                setting: "an intimate car setting",
+                image: "https://images.pexels.com/photos/1633602/pexels-photo-1633602.jpeg"
+            },
+            {
+                setting: "a secluded park at night",
+                image: "https://images.pexels.com/photos/1676073/pexels-photo-1676073.jpeg"
+            },
+            {
+                setting: "a private office",
+                image: "https://images.pexels.com/photos/667838/pexels-photo-667838.jpeg"
+            },
+            {
+                setting: "an outdoor hot tub",
+                image: "https://images.pexels.com/photos/14989649/pexels-photo-14989649.jpeg"
+            },
+            {
+                setting: "an empty movie theater",
+                image: "https://images.pexels.com/photos/8485521/pexels-photo-8485521.jpeg"
+            }
+        ];
+
+        // Additional arrays for story elements
+        const moods = [
+            "passionate",
+            "playful",
+            "romantic",
+            "adventurous",
+            "intimate",
+            "sensual",
+            "exciting",
+            "tender",
+            "mysterious",
+            "spontaneous"
+        ];
+
+        const timesOfDay = [
+            "night",
+            "evening",
+            "afternoon",
+            "morning",
+            "dusk",
+            "dawn",
+            "late night",
+            "sunset",
+            "sunrise"
+        ];
+
+        const sensoryDetails = [
+            "the soft glow of candles illuminates the space",
+            "the gentle sound of rain creates a soothing backdrop",
+            "a warm breeze carries the scent of jasmine",
+            "the distant sound of waves adds to the ambiance",
+            "soft music plays in the background",
+            "the crackling fireplace adds warmth to the room",
+            "moonlight filters through the curtains",
+            "stars twinkle above, creating a magical atmosphere",
+            "the aroma of fresh roses fills the air",
+            "the dim lights cast a golden hue around you"
+        ];
+
+        const feelings = [
+            "excitement",
+            "anticipation",
+            "desire",
+            "affection",
+            "connection",
+            "electricity",
+            "comfort",
+            "passion",
+            "joy",
+            "euphoria"
+        ];
+
+        const actionsVerbs = [
+            "begin",
+            "start",
+            "initiate",
+            "embrace",
+            "indulge in",
+            "delve into",
+            "explore",
+            "immerse in",
+            "engage in",
+            "savor"
+        ];
+
+        const transitions = [
+            "leading seamlessly into",
+            "naturally progressing to",
+            "building up to",
+            "culminating in",
+            "transitioning smoothly into",
+            "flowing into",
+            "advancing towards",
+            "moving gracefully into",
+            "evolving into",
+            "ushering in"
+        ];
+
+        // Start Game Button
+        document.getElementById('start-button').addEventListener('click', () => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            rollDice();
+        });
+
+        // Roll Dice Button
+        document.getElementById('roll-button').addEventListener('click', rollDice);
+
+        function rollDice() {
+            // Dice Roll Animations
+            animateDice();
+
+            // Generate Random Indices
+            const actionIndex = Math.floor(Math.random() * actions.length);
+            const positionIndex = Math.floor(Math.random() * positions.length);
+            const backgroundIndex = Math.floor(Math.random() * backgrounds.length);
+            const moodIndex = Math.floor(Math.random() * moods.length);
+            const timeIndex = Math.floor(Math.random() * timesOfDay.length);
+            const sensoryIndex = Math.floor(Math.random() * sensoryDetails.length);
+            const feelingIndex = Math.floor(Math.random() * feelings.length);
+            const actionVerbIndex = Math.floor(Math.random() * actionsVerbs.length);
+            const transitionIndex = Math.floor(Math.random() * transitions.length);
+
+            // Get Random Elements
+            const action = actions[actionIndex];
+            const position = positions[positionIndex];
+            const background = backgrounds[backgroundIndex];
+            const mood = moods[moodIndex];
+            const timeOfDay = timesOfDay[timeIndex];
+            const sensoryDetail = sensoryDetails[sensoryIndex];
+            const feeling = feelings[feelingIndex];
+            const actionVerb = actionsVerbs[actionVerbIndex];
+            const transition = transitions[transitionIndex];
+
+            // Update Background Image
+            document.getElementById('background').style.backgroundImage = `url('${background.image}')`;
+
+            // Update Dice Faces
+            updateDiceFace('dice-action', action);
+            updateDiceFace('dice-position', position);
+
+            // Generate Creative Story
+            const story = generateStory(
+                action,
+                position,
+                background.setting,
+                mood,
+                timeOfDay,
+                sensoryDetail,
+                feeling,
+                actionVerb,
+                transition
+            );
+
+            document.getElementById('story-text').textContent = story;
+        }
+
+        function animateDice() {
+            const diceAction = document.getElementById('dice-action');
+            const dicePosition = document.getElementById('dice-position');
+
+            diceAction.classList.add('roll-animation');
+            dicePosition.classList.add('roll-animation');
+
+            setTimeout(() => {
+                diceAction.classList.remove('roll-animation');
+                dicePosition.classList.remove('roll-animation');
+            }, 500);
+        }
+
+        function updateDiceFace(diceId, text) {
+            const dice = document.getElementById(diceId);
+            const diceText = dice.querySelector('.dice-text');
+            diceText.textContent = text;
+        }
+
+        function generateStory(
+            action,
+            position,
+            setting,
+            mood,
+            timeOfDay,
+            sensoryDetail,
+            feeling,
+            actionVerb,
+            transition
+        ) {
+            const storyTemplates = [
+                `In ${setting} during the ${timeOfDay}, ${sensoryDetail}. Feeling a sense of ${feeling}, you both ${actionVerb} ${action}. The ${mood} atmosphere enhances the experience, ${transition} ${position}. It's a moment filled with connection and unforgettable emotion.`,
+                `As the ${timeOfDay} unfolds in ${setting}, ${sensoryDetail}. You ${actionVerb} ${action}, and the ${mood} energy between you grows stronger. Soon, you find yourselves ${transition} ${position}, creating a memory that lingers.`,
+                `${sensoryDetail} in ${setting} sets the stage for a ${mood} ${timeOfDay}. You ${actionVerb} in ${action}, each moment intensifying the ${feeling} you share. This leads you ${transition} ${position}, where time seems to stand still.`,
+                `Amidst ${setting}, with ${sensoryDetail}, you feel ${feeling} during the ${timeOfDay}. You ${actionVerb} ${action}, and the ${mood} vibes carry you ${transition} ${position}. The experience is both thrilling and deeply connecting.`,
+                `During a ${mood} ${timeOfDay} in ${setting}, ${sensoryDetail}. You ${actionVerb} ${action}, and every touch heightens the ${feeling}. Together, you ${transition} ${position}, embracing the intimacy of the moment.`,
+                `The ${timeOfDay} in ${setting} is perfect, as ${sensoryDetail}. You feel ${feeling} and ${actionVerb} ${action}. The ${mood} mood leads you ${transition} ${position}, creating a beautiful tapestry of shared emotion.`,
+                `Surrounded by ${setting} and ${sensoryDetail}, you ${actionVerb} ${action} during the ${timeOfDay}. The ${mood} ambiance is palpable, and you both ${transition} ${position}, cherishing the closeness you feel.`,
+                `With ${sensoryDetail} in ${setting}, the ${mood} ${timeOfDay} inspires you to ${actionVerb} ${action}. The ${feeling} builds as you ${transition} ${position}, making it a night to remember.`,
+                `In the heart of ${setting} at ${timeOfDay}, ${sensoryDetail}. You ${actionVerb} ${action}, the ${mood} setting amplifying the ${feeling}. This naturally ${transition} ${position}, where every moment is savored.`,
+                `Embraced by ${setting}, where ${sensoryDetail}, you feel ${feeling} during the ${timeOfDay}. You ${actionVerb} ${action}, and the ${mood} atmosphere guides you ${transition} ${position}, deepening your bond.`
+            ];
+
+            const randomTemplate = storyTemplates[Math.floor(Math.random() * storyTemplates.length)];
+            return randomTemplate;
+        }
+
+        // Initial Dice Setup
+        updateDiceFace('dice-action', actions[0]);
+        updateDiceFace('dice-position', positions[0]);
+    </script>
+</body>
+</html>
